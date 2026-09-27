@@ -10,7 +10,7 @@
                     "name": "Move",
                     "type": "Value",
                     "id": "71bdc580-c813-43e1-b9ff-9512c5bcea93",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -31,7 +31,7 @@
                 {
                     "name": "Up",
                     "id": "6db14244-2d34-4a8e-8213-01e1719e741d",
-                    "path": "<KeyboardP1>/W",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": ";KeyboardP1",
@@ -42,7 +42,7 @@
                 {
                     "name": "Down",
                     "id": "14be5e22-d635-438b-bef1-fff3ff232ff3",
-                    "path": "<KeyboardP1>/S",
+                    "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
                     "groups": ";KeyboardP1",
@@ -53,7 +53,7 @@
                 {
                     "name": "Left",
                     "id": "af5d681d-b80d-40c8-a72c-0fde2773a184",
-                    "path": "<KeyboardP1>/A",
+                    "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
                     "groups": ";KeyboardP1",
@@ -64,10 +64,10 @@
                 {
                     "name": "Right",
                     "id": "62cbef72-73a1-4876-b5a1-98115aee12a8",
-                    "path": "<KeyboardP1>/D",
+                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";KeyboardP1",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
