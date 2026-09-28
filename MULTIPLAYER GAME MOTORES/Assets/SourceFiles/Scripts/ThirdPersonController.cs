@@ -1,6 +1,7 @@
 ﻿ using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
+ using StarterAssets;
 #endif
 
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
@@ -9,20 +10,18 @@ using UnityEngine.InputSystem;
 namespace StarterAssets
 {
     [RequireComponent(typeof(CharacterController))]
-#if ENABLE_INPUT_SYSTEM 
+#if ENABLE_INPUT_SYSTEM
     [RequireComponent(typeof(PlayerInput))]
 #endif
     public class ThirdPersonController : MonoBehaviour
     {
-        [Header("Player")]
-        [Tooltip("Move speed of the character in m/s")]
+        [Header("Player")] [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 2.0f;
 
         [Tooltip("Sprint speed of the character in m/s")]
         public float SprintSpeed = 5.335f;
 
-        [Tooltip("How fast the character turns to face movement direction")]
-        [Range(0.0f, 0.3f)]
+        [Tooltip("How fast the character turns to face movement direction")] [Range(0.0f, 0.3f)]
         public float RotationSmoothTime = 0.12f;
 
         [Tooltip("Acceleration and deceleration")]
@@ -32,8 +31,7 @@ namespace StarterAssets
         public AudioClip[] FootstepAudioClips;
         [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
 
-        [Space(10)]
-        [Tooltip("The height the player can jump")]
+        [Space(10)] [Tooltip("The height the player can jump")]
         public float JumpHeight = 1.2f;
 
         [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
@@ -50,8 +48,7 @@ namespace StarterAssets
         [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
         public bool Grounded = true;
 
-        [Tooltip("Useful for rough ground")]
-        public float GroundedOffset = -0.14f;
+        [Tooltip("Useful for rough ground")] public float GroundedOffset = -0.14f;
 
         [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
         public float GroundedRadius = 0.28f;
@@ -75,18 +72,18 @@ namespace StarterAssets
         [Tooltip("For locking the camera position on all axis")]
         public bool LockCameraPosition = false;
 
-        public Vector2  LookSensitivity = new Vector2(7.5f, 5.0f);
+        public Vector2 LookSensitivity = new Vector2(7.5f, 5.0f);
 
         // cinemachine
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
 
         // Camera starting position and rotation
-private Vector3 _cameraStartingPosition;
-private Quaternion _cameraStartingRotation;
+        private Vector3 _cameraStartingPosition;
+        private Quaternion _cameraStartingRotation;
 
 // Variable to indicate if we are resetting the camera 
-public bool IsRespawning { get; set; } = false;
+        public bool IsRespawning { get; set; } = false;
 
 
         // player
@@ -108,7 +105,7 @@ public bool IsRespawning { get; set; } = false;
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
 
-#if ENABLE_INPUT_SYSTEM 
+#if ENABLE_INPUT_SYSTEM
         private PlayerInput _playerInput;
 #endif
         private Animator _animator;
@@ -119,6 +116,10 @@ public bool IsRespawning { get; set; } = false;
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
+
+        private int _coinCount = 0;
+        
+        public int CoinCount => _coinCount;
 
         private bool IsCurrentDeviceMouse
         {
@@ -143,28 +144,29 @@ public bool IsRespawning { get; set; } = false;
         }
 
         private void Start()
-{
-    _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+        {
+            _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
-    _hasAnimator = TryGetComponent(out _animator);
-    _controller = GetComponent<CharacterController>();
-    _input = GetComponent<StarterAssetsInputs>();
-#if ENABLE_INPUT_SYSTEM 
-    _playerInput = GetComponent<PlayerInput>();
+            _hasAnimator = TryGetComponent(out _animator);
+            _controller = GetComponent<CharacterController>();
+            _input = GetComponent<StarterAssetsInputs>();
+#if ENABLE_INPUT_SYSTEM
+            _playerInput = GetComponent<PlayerInput>();
+            GameManager.Instance.AssignPlayerInput(_playerInput);
 #else
 	Debug.LogError("Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
-    
-    AssignAnimationIDs();
 
-    // Save the starting camera position and rotation
-    _cameraStartingPosition = CinemachineCameraTarget.transform.position;
-    _cameraStartingRotation = CinemachineCameraTarget.transform.rotation;
+            AssignAnimationIDs();
 
-    // reset our timeouts on start
-    _jumpTimeoutDelta = JumpTimeout;
-    _fallTimeoutDelta = FallTimeout;
-}
+            // Save the starting camera position and rotation
+            _cameraStartingPosition = CinemachineCameraTarget.transform.position;
+            _cameraStartingRotation = CinemachineCameraTarget.transform.rotation;
+
+            // reset our timeouts on start
+            _jumpTimeoutDelta = JumpTimeout;
+            _fallTimeoutDelta = FallTimeout;
+        }
 
         private void Update()
         {
@@ -205,39 +207,39 @@ public bool IsRespawning { get; set; } = false;
         }
 
         private void CameraRotation()
-{
-    // if respawning, reset to starting position and rotation
-    if (IsRespawning)
-    {
-        _cinemachineTargetYaw = 0f; // Reset yaw to zero (or configure as needed)
-        _cinemachineTargetPitch = 0f;
+        {
+            // if respawning, reset to starting position and rotation
+            if (IsRespawning)
+            {
+                _cinemachineTargetYaw = 0f; // Reset yaw to zero (or configure as needed)
+                _cinemachineTargetPitch = 0f;
 
-        // Reset Cinemachine Camera Target to its starting state
-        CinemachineCameraTarget.transform.position = _cameraStartingPosition;
-        CinemachineCameraTarget.transform.rotation = _cameraStartingRotation;
+                // Reset Cinemachine Camera Target to its starting state
+                CinemachineCameraTarget.transform.position = _cameraStartingPosition;
+                CinemachineCameraTarget.transform.rotation = _cameraStartingRotation;
 
-        IsRespawning = false; // Reset the respawning flag
-        return;
-    }
+                IsRespawning = false; // Reset the respawning flag
+                return;
+            }
 
-    // if there is an input and camera position is not fixed
-    if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
-    {
-        float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+            // if there is an input and camera position is not fixed
+            if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+            {
+                float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-        _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier * LookSensitivity.x;
-        _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier * LookSensitivity.y;
-    }
+                _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier * LookSensitivity.x;
+                _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier * LookSensitivity.y;
+            }
 
-    _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-    _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+            _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
+            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
 
-    CinemachineCameraTarget.transform.rotation = Quaternion.Euler(
-        _cinemachineTargetPitch + CameraAngleOverride,
-        _cinemachineTargetYaw,
-        0.0f
-    );
-}
+            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(
+                _cinemachineTargetPitch + CameraAngleOverride,
+                _cinemachineTargetYaw,
+                0.0f
+            );
+        }
 
         private void Move()
         {
@@ -404,7 +406,9 @@ public bool IsRespawning { get; set; } = false;
                 if (FootstepAudioClips.Length > 0)
                 {
                     var index = Random.Range(0, FootstepAudioClips.Length);
-                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index],
+                        transform.TransformPoint(_controller.center),
+                        FootstepAudioVolume);
                 }
             }
         }
@@ -413,21 +417,44 @@ public bool IsRespawning { get; set; } = false;
         {
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center),
+                    FootstepAudioVolume);
             }
         }
+
         public void ResetCameraRotation(float targetYaw)
-{
-    // Reset the yaw and pitch to default values (targetYaw for Y rotation, and 0 for pitch)
-    _cinemachineTargetYaw = targetYaw;
-    _cinemachineTargetPitch = 0f;
+        {
+            // Reset the yaw and pitch to default values (targetYaw for Y rotation, and 0 for pitch)
+            _cinemachineTargetYaw = targetYaw;
+            _cinemachineTargetPitch = 0f;
 
-    // Reset the camera target's rotation explicitly
-    CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch, _cinemachineTargetYaw, 0f);
+            // Reset the camera target's rotation explicitly
+            CinemachineCameraTarget.transform.rotation =
+                Quaternion.Euler(_cinemachineTargetPitch, _cinemachineTargetYaw, 0f);
 
-    Debug.Log($"Camera Yaw reset to {targetYaw} degrees.");
-}
+            Debug.Log($"Camera Yaw reset to {targetYaw} degrees.");
+        }
+        
+        private void OnEnable()
+        {
+            PlayerObserverManager.OnCoinCollected += CollectCoin;
+        }
+
+        private void OnDisable()
+        {
+            PlayerObserverManager.OnCoinCollected -= CollectCoin;
+        }
+
+        private void CollectCoin(GameObject player)
+        {
+            if (player != transform.parent.gameObject)
+                return;
+            
+            _coinCount++;
+            
+            PlayerObserverManager.NotifyCoinCountChanged(transform.parent.gameObject, _coinCount);
+            
+            Debug.Log(gameObject.name + " possui " + _coinCount + " moedas.");
+        }
     }
-
-    
 }

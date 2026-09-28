@@ -119,7 +119,64 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &245519524
+--- !u!1001 &1514559607
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3742735223226028135, guid: f3946b8f7da6cce448022a10338db28d, type: 3}
+      propertyPath: m_Name
+      value: AudioManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 6008055504428602170, guid: f3946b8f7da6cce448022a10338db28d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1205.6694
+      objectReference: {fileID: 0}
+    - target: {fileID: 6008055504428602170, guid: f3946b8f7da6cce448022a10338db28d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1283.7059
+      objectReference: {fileID: 0}
+    - target: {fileID: 6008055504428602170, guid: f3946b8f7da6cce448022a10338db28d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -30.28573
+      objectReference: {fileID: 0}
+    - target: {fileID: 6008055504428602170, guid: f3946b8f7da6cce448022a10338db28d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6008055504428602170, guid: f3946b8f7da6cce448022a10338db28d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6008055504428602170, guid: f3946b8f7da6cce448022a10338db28d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6008055504428602170, guid: f3946b8f7da6cce448022a10338db28d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6008055504428602170, guid: f3946b8f7da6cce448022a10338db28d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6008055504428602170, guid: f3946b8f7da6cce448022a10338db28d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6008055504428602170, guid: f3946b8f7da6cce448022a10338db28d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f3946b8f7da6cce448022a10338db28d, type: 3}
+--- !u!1 &1736262451
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,8 +184,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 245519525}
-  - component: {fileID: 245519526}
+  - component: {fileID: 1736262453}
+  - component: {fileID: 1736262452}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -136,38 +193,38 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &245519525
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 245519524}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1255.8073, y: -0.00007, z: 857.5205}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &245519526
+--- !u!114 &1736262452
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 245519524}
+  m_GameObject: {fileID: 1736262451}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f485f51fb63dcd49b29c0c46de52ee4, type: 3}
+  m_Script: {fileID: 11500000, guid: ffe4b342c060dd94aaf24881c9fce4aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  gameplaySceneName: GetStarted_Scene
-  guiSceneName: GUI
-  totalStarsInGame: 1
+  currentState: 0
+  playerInput: {fileID: 0}
+--- !u!4 &1736262453
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1736262451}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 245519525}
+  - {fileID: 1514559607}
+  - {fileID: 1736262453}

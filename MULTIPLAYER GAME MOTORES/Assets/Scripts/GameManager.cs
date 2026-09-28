@@ -1,98 +1,85 @@
-using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    public static GameManager Instance;
 
-    [Header("Nomes das Cenas")]
-    [SerializeField] private string gameplaySceneName = "Gameplay";
-    [SerializeField] private string guiSceneName = "GUI";
-
-    [Header("Condição de Vitória")]
-    [SerializeField] private int totalStarsInMap = 10;
-
-    private int[] playerStars = new int[2];
-    private int totalCollectedStars = 0;
-
-    // Eventos (Padrão Observer)
-    public static event Action<int, int> OnStarCollected; // (playerIndex, starCount)
-    public static event Action<string> OnGameOver;        // (winnerMessage)
+    public GameState currentState;
+    
+    public PlayerInput playerInput;   
+    
+    public enum GameState
+    {
+        Iniciando,
+        MenuPrincipal,
+        Gameplay
+    }
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
         {
             Destroy(gameObject);
-            return;
         }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
     {
-        StartCoroutine(LoadGameScenes());
+        ChangeState(GameState.Iniciando);
+        SceneManager.LoadScene("Splash");
     }
 
-    private IEnumerator LoadGameScenes()
+    public void ChangeState(GameState newState)
     {
-        // Carrega Gameplay
-        AsyncOperation gameplayLoad = SceneManager.LoadSceneAsync(gameplaySceneName, LoadSceneMode.Single);
-        while (!gameplayLoad.isDone) yield return null;
-
-        // Carrega GUI em modo Aditivo
-        AsyncOperation guiLoad = SceneManager.LoadSceneAsync(guiSceneName, LoadSceneMode.Additive);
-        while (!guiLoad.isDone) yield return null;
-
-        ResetGameState();
+        currentState = newState;
+        Debug.Log("Estado atual: " + currentState);
     }
 
-    public void AddStarToPlayer(int playerIndex)
+    public void LoadScene(string sceneName)
     {
-        if (playerIndex < 0 || playerIndex >= playerStars.Length) return;
-
-        playerStars[playerIndex]++;
-        totalCollectedStars++;
-
-        // Notifica inscritos (Observer)
-        OnStarCollected?.Invoke(playerIndex, playerStars[playerIndex]);
-
-        if (totalCollectedStars >= totalStarsInMap)
+        switch (sceneName)
         {
-            DetermineWinner();
+            case "Splash":
+                SceneManager.LoadScene(sceneName);
+                break;
+
+            case "MenuPrincipal":
+                SceneManager.LoadScene(sceneName);
+                ChangeState(GameState.MenuPrincipal);
+                break;
+
+            case "GetStarted_Scene":
+                SceneManager.LoadScene(sceneName);
+
+                SceneManager.LoadScene(
+                    "GUI",
+                    LoadSceneMode.Additive
+                );
+                
+                ChangeState(GameState.Gameplay);
+                break;
+
+            default:
+                Debug.LogWarning("Cena não reconhecida: " + sceneName);
+                break;
         }
     }
 
-    private void DetermineWinner()
+    public void LoadMenu()
     {
-        string winnerMessage;
-
-        if (playerStars[0] > playerStars[1])
-        {
-            winnerMessage = "JOGADOR 1 VENCEU! (Coletou mais estrelas)";
-        }
-        else if (playerStars[1] > playerStars[0])
-        {
-            winnerMessage = "JOGADOR 2 VENCEU! (Coletou mais estrelas)";
-        }
-        else
-        {
-            winnerMessage = "EMPATE!";
-        }
-
-        OnGameOver?.Invoke(winnerMessage);
-        Time.timeScale = 0f; // Pausa o jogo ao terminar
+        LoadScene("MenuPrincipal");
     }
-
-    private void ResetGameState()
+    
+    public void AssignPlayerInput(PlayerInput input)
     {
-        Time.timeScale = 1f;
-        playerStars[0] = 0;
-        playerStars[1] = 0;
-        totalCollectedStars = 0;
+        playerInput = input;
+        Debug.Log("PlayerInput alocado.");
     }
 }

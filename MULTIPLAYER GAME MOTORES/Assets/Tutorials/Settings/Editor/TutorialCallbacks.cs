@@ -33,6 +33,8 @@ public class TutorialCallbacks : ScriptableObject
         return asset;
     }
 
+    // ****************************
+    // Added by VB with help from ClaudeAI
     // Used in early tutorials to select GameObject for the user.
     public void SelectGameObjectInScene(string gameObjectName)
     {
@@ -55,7 +57,8 @@ public class TutorialCallbacks : ScriptableObject
             Debug.LogWarning($"GameObject not found: {gameObjectName}");
         }
     }
-    
+    // ****************************
+    // Added by VB with help from ClaudeAI
     // Used in early tutorials to select asset in project for the user.
     public void SelectAssetinProject(string assetName)
     {
@@ -81,6 +84,8 @@ public class TutorialCallbacks : ScriptableObject
         }
     }
 
+    // ****************************
+    // Added by VB with help from UAI
     public void SelectFolderInProject(string folderPath)
     {
         Object folderObject = AssetDatabase.LoadAssetAtPath<Object>(folderPath);
@@ -96,12 +101,16 @@ public class TutorialCallbacks : ScriptableObject
         }
     }
 
+    // ****************************
+    // Added by VB with help from Guillaume
     // Used in Welcome Dialog to start tutorials from buttons.
     public void StartTutorial(Unity.Tutorials.Editor.Tutorial tutorial)
     {
         Unity.Tutorials.Editor.TutorialWindowUtils.StartTutorial(tutorial);
     }
 
+    // ****************************
+    // Added by VB with help from ClaudeAI
     public void DisableGameObject(string objectName)
     {
         GameObject objectToDisable = GameObject.Find(objectName);
@@ -116,6 +125,8 @@ public class TutorialCallbacks : ScriptableObject
             Debug.LogWarning($"GameObject '{objectName}' not found. Unable to disable.");
         }
     }
+    // ****************************
+    // Added by VB with help from ClaudeAI
     public void EnableGameObject(string objectName)
     {
         Debug.Log("EnableGameObject ran. Looking for: " + objectName);
@@ -178,6 +189,7 @@ public void FrameObjectWithTag(string objectTag)
 }
 
     // Camera Enable/Disable functions using Transform to find child camera and child listener
+    // Added by VB with help from UAI
     private GameObject mainCamera;
     private GameObject robotCamera;
     private GameObject robotListener;
@@ -204,9 +216,14 @@ public void FrameObjectWithTag(string objectTag)
         // Enable the target camera and disable the other one.
         // If there is no robotCamera or robotListener, use Main Camera (with its listener) so that there is always a camera
         // No error or warning if robotCamera or robotListener is null -- sometimes the robot isn't in the scene
+
+
     }
 
+
+
     // Functions to find a GameObject by name in the Hierarchy (even if a child)
+    // Added by VB with help from UAI
     public static GameObject FindGameObjectByName(string name)
     {
         GameObject[] rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
@@ -239,7 +256,10 @@ public void FrameObjectWithTag(string objectTag)
         return null;
     }
 
+    // ****************************
+    // Added by VB with help from ClaudeAI
     // Used to set up the layout of the Project window to match the tutorial.
+    // ClaudeAI warned about Internal API calls.
     // NOT CALLED -- Layout appears to handle this now
     public void CustomizeProjectWindowLayout()
     {
@@ -318,6 +338,8 @@ public void FrameObjectWithTag(string objectTag)
         }
     }
 
+    // Added by VB with help from UAI
+    // Closes the AI Navigation window if it opens by default
     // NOT CALLED -- Layout appears to handle this now
     public void CloseNavWindowOnStart()
     {
@@ -336,7 +358,9 @@ public void FrameObjectWithTag(string objectTag)
 
 
     // Configure Main Camera to look at the Environment.
-    // Necessary because the user may create a new Scena and save over SampleScene in T1, using the Main Camera's default config instead of the one we want, as set in SampleScene.
+    // Necessary because the user may create a new Scena and save over SampleScene in T1, using the Main Camer'as default config instead of the one we want, as set in SampleScene.
+    // 10/30/2024 AI-Tag
+    // This was created with assistance from Muse, a Unity Artificial Intelligence product
     // Edited to use the mainCamera GameObject defined above for UseMainCamera()
     public void ConfigureMainCamera()
     {

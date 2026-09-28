@@ -32,6 +32,10 @@ public class Pickup : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        PlayerObserverManager.NotifyCoinCollected(other.transform.parent.gameObject);
+
+        WinnerManager.Instance.StarCollected();
+        
         // Check if the colliding object has the "Player" tag
         if (other.CompareTag("Player"))
         {

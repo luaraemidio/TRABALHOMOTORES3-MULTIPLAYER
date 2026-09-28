@@ -3,69 +3,34 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    [Header("Mostradores de Moedas")]
-    [SerializeField] private TextMeshProUGUI p1CoinsText;
-    [SerializeField] private TextMeshProUGUI p2CoinsText;
-
-    [Header("Mostradores de Estrelas")]
-    [SerializeField] private TextMeshProUGUI p1StarsText;
-    [SerializeField] private TextMeshProUGUI p2StarsText;
-
-    [Header("Painel do Vencedor")]
-    [SerializeField] private GameObject gameOverPanel;
-    [SerializeField] private TextMeshProUGUI winnerText;
-
+    public TextMeshProUGUI player1Score;
+    public TextMeshProUGUI player2Score;
+    
     private void OnEnable()
     {
-        
-        PlayerController.OnCoinCollected += UpdateCoinUI;
-        GameManager.OnStarCollected += UpdateStarUI;
-        GameManager.OnGameOver += DisplayGameOver;
+        PlayerObserverManager.OnCoinCountChanged += UpdateScore;
     }
 
     private void OnDisable()
     {
-        
-        PlayerController.OnCoinCollected -= UpdateCoinUI;
-        GameManager.OnStarCollected -= UpdateStarUI;
-        GameManager.OnGameOver -= DisplayGameOver;
+        PlayerObserverManager.OnCoinCountChanged -= UpdateScore;
     }
 
     private void Start()
     {
-        UpdateCoinUI(0, 0);
-        UpdateCoinUI(1, 0);
-        UpdateStarUI(0, 0);
-        UpdateStarUI(1, 0);
-
-        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        player1Score.text = "PLAYER 1 SCORE: 0";
+        player2Score.text = "PLAYER 2 SCORE: 0";
     }
-
-    private void UpdateCoinUI(int playerIndex, int coinsCount)
+    
+    private void UpdateScore(GameObject player, int score)
     {
-        if (playerIndex == 0 && p1CoinsText != null)
-            p1CoinsText.text = $"P1 Moedas: {coinsCount}";
-        else if (playerIndex == 1 && p2CoinsText != null)
-            p2CoinsText.text = $"P2 Moedas: {coinsCount}";
-    }
-
-    private void UpdateStarUI(int playerIndex, int starsCount)
-    {
-        if (playerIndex == 0 && p1StarsText != null)
-            p1StarsText.text = $"P1 Estrelas: {starsCount}";
-        else if (playerIndex == 1 && p2StarsText != null)
-            p2StarsText.text = $"P2 Estrelas: {starsCount}";
-    }
-
-    private void DisplayGameOver(string resultMessage)
-    {
-        if (gameOverPanel != null)
+        if (player.name.StartsWith("PlayerRobot (1)"))
         {
-            gameOverPanel.SetActive(true);
-            if (winnerText != null)
-            {
-                winnerText.text = resultMessage;
-            }
+            player2Score.text = "PLAYER 2 SCORE: " + score;
+        }
+        else
+        {
+            player1Score.text = "PLAYER 1 SCORE: " + score;
         }
     }
 }
