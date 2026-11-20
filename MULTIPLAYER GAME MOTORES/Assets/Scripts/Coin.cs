@@ -3,17 +3,37 @@ using StarterAssets;
 
 public class Coin : MonoBehaviour
 {
+    private bool collected;
+
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("Player"))
+        if (collected)
             return;
 
-        ThirdPersonController controller = other.GetComponent<ThirdPersonController>();
+        ThirdPersonController controller =
+            other.GetComponentInParent<ThirdPersonController>();
 
-        if (controller != null)
+        if (controller == null)
+            return;
+
+        if (!other.CompareTag("Player") && !controller.CompareTag("Player"))
+            return;
+
+        collected = true;
+
+        controller.MoveSpeed += 1f;
+        controller.SprintSpeed += 1f;
+
+        PlayerCollectibleCounts counts =
+            controller.GetComponentInParent<PlayerCollectibleCounts>();
+
+        if (counts != null)
         {
-            controller.MoveSpeed += 1f;
-            controller.SprintSpeed += 1f;
+            counts.AddCoin();
+        }
+        else
+        {
+            Debug.LogWarning("Adicione PlayerCollectibleCounts ao robô.", controller);
         }
 
         Destroy(gameObject);

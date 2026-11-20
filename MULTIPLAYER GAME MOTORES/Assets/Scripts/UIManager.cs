@@ -8,12 +8,12 @@ public class UIManager : MonoBehaviour
     
     private void OnEnable()
     {
-        PlayerObserverManager.OnCoinCountChanged += UpdateScore;
+        PlayerObserverManager.OnStarCountChanged += UpdateScore;
     }
 
     private void OnDisable()
     {
-        PlayerObserverManager.OnCoinCountChanged -= UpdateScore;
+        PlayerObserverManager.OnStarCountChanged -= UpdateScore;
     }
 
     private void Start()

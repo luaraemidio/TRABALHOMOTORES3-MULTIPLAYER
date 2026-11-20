@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using StarterAssets;
 
 public class WinnerManager : MonoBehaviour
 {
@@ -10,65 +9,65 @@ public class WinnerManager : MonoBehaviour
     public TextMeshProUGUI winnerText;
 
     private int remainingStars;
+    private bool startedCounting;
+    private bool matchEnded;
 
     private void Awake()
     {
         Instance = this;
     }
 
-    private void Start()
-    {
-        Pickup[] stars = FindObjectsOfType<Pickup>();
-
-        remainingStars = stars.Length;
-
-        Debug.Log("Total de estrelas: " + remainingStars);
-    }
-
     public void StarCollected()
     {
-        remainingStars--;
+        if (matchEnded)
+            return;
 
+        // A GUI pode carregar antes da fase. Conte as estrelas
+        // na primeira coleta, enquanto o Pickup ainda existe na cena.
+        if (!startedCounting)
+        {
+            remainingStars = FindObjectsOfType<Pickup>().Length;
+            startedCounting = true;
+        }
+
+        remainingStars--;
         Debug.Log("Restam " + remainingStars + " estrelas.");
 
-        if (remainingStars <= 0)
+        if (remainingStars > 0)
+            return;
+
+        GameObject player1 = GameObject.Find("PlayerRobot");
+        GameObject player2 = GameObject.Find("PlayerRobot (1)");
+
+        if (player1 == null || player2 == null ||
+            !player1.TryGetComponent(out PlayerCollectibleCounts player1Counts) ||
+            !player2.TryGetComponent(out PlayerCollectibleCounts player2Counts))
         {
-            ThirdPersonController[] players = FindObjectsOfType<ThirdPersonController>();
+            Debug.LogError(
+                "Confira se PlayerRobot e PlayerRobot (1) estão ativos " +
+                "e têm PlayerCollectibleCounts no objeto principal.", this);
+            return;
+        }
 
-            int player1 = 0;
-            int player2 = 0;
-
-            foreach (ThirdPersonController player in players)
-            {
-                if (player.transform.parent.name.StartsWith("PlayerRobot (1)"))
-                {
-                    player2 = player.CoinCount;
-                }
-                else
-                {
-                    player1 = player.CoinCount;
-                }
-            }
-
-            if (player1 > player2)
-            {
-                ShowWinner("PLAYER 1 WINS!");
-            }
-            else if (player2 > player1)
-            {
-                ShowWinner("PLAYER 2 WINS!");
-            }
-            else
-            {
-                ShowWinner("EMPATE!");
-            }
+        if (player1Counts.Stars > player2Counts.Stars)
+        {
+            ShowWinner("PLAYER 1 WINS!");
+        }
+        else if (player2Counts.Stars > player1Counts.Stars)
+        {
+            ShowWinner("PLAYER 2 WINS!");
+        }
+        else
+        {
+            ShowWinner("EMPATE!");
         }
     }
 
     public void ShowWinner(string winner)
     {
-        winnerPanel.SetActive(true);
+        matchEnded = true;
         winnerText.text = winner;
+        winnerPanel.SetActive(true);
         Time.timeScale = 0f;
     }
 }
